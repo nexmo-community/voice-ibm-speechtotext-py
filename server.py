@@ -20,7 +20,7 @@ d ={
 
 language_model = 'en-UK_NarrowbandModel' # Specify the Narrowband model for your language
 
-HOSTNAME = 'sammachin.ngrok.io' #Change to the hostname of your server
+HOSTNAME = 'example.com' #Change to the hostname of your server
 
 
 
