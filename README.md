@@ -31,4 +31,4 @@ Link a number to your application and then when you call the number you will be 
 
 
 ## Extending 
-This example code simply prints the reponses from Watson to the console, however to integrate it with your own applicaiton you should extend the `on_watson_message` function at line 94 in server.py
+This example code simply prints the reponses from Watson to the console, however to integrate it with your own applicaiton you should extend the `on_watson_message` [function in server.py](https://github.com/nexmo-community/voice-watson-speechtotext/blob/master/server.py#L94)
