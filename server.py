@@ -1,4 +1,5 @@
 import tornado.httpserver
+import tornado.httpclient
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
@@ -9,30 +10,10 @@ import os
 from string import Template
 
 
-
-#Watson Service Credentials, replace with your credentials from Watson
-d ={
-  "url": "https://stream.watsonplatform.net/speech-to-text/api",
-  "username": "aaaaaaaa-1111-bbbb-2222-cccccccccccc",
-  "password": "ABC123def456"
-
-}
-
 language_model = 'en-UK_NarrowbandModel' # Specify the Narrowband model for your language
 
-HOSTNAME = 'example.com' #Change to the hostname of your server
-
-
-
-def gettoken():
-    resp = requests.get('https://stream.watsonplatform.net/authorization/api/v1/token', auth=(d['username'], d['password']), params={'url' : d['url']})
-    token = None
-    if resp.status_code == 200:
-        token = resp.content
-    else:
-        print resp.status_code
-        print resp.content
-    return token
+WATSON_API_KEY = 'YOUR_API_KEY' #Change to your Watson/IBM Cloud Speech to Text API Key
+HOSTNAME = 'voice.ngrok.io' #Change to the hostname of your server
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -70,8 +51,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
     watson_future = None
     def open(self):
         print("Websocket Call Connected")
-        uri = 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?watson-token={}&model={}'.format(gettoken(), language_model)
-        self.watson_future = tornado.websocket.websocket_connect(uri, on_message_callback=self.on_watson_message)
+        uri = 'wss://stream.watsonplatform.net/speech-to-text/api/v1/recognize?model={}'.format(language_model)
+        http_request = tornado.httpclient.HTTPRequest(uri, auth_username="apikey", auth_password=WATSON_API_KEY)
+        self.watson_future = tornado.websocket.websocket_connect(http_request, on_message_callback=self.on_watson_message)
     @gen.coroutine
     def on_message(self, message):
         watson = yield self.watson_future
